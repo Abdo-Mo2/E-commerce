@@ -56,7 +56,7 @@ product: any;
     return this.wishlist.has(productId);
   }
 
-     addToCart(product: any): void {
+  addToCart(product: any): void {
     this.cart.addItem({
       productId: product._id,
       title: product.title,
@@ -64,7 +64,7 @@ product: any;
       price: product.price,
       quantity: 1,
     });
-    this.toastr.success('Added to cart');
+    this.toastr?.success?.('Added to cart');
   }
 
     onAddToCartHover(event: Event, isHover: boolean): void {

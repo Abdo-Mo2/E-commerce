@@ -110,6 +110,80 @@ export class OrdersService {
     return order;
   }
 
+  // Record a local order from API cart items (shape from features/cart/services)
+  recordLocalOrderFromApiItems(apiItems: any[], paymentType: PaymentMethod): OrderSummary {
+    const itemsMapped = apiItems.map((i: any) => ({
+      productId: i.product?._id,
+      title: i.product?.title,
+      image: i.product?.imageCover,
+      price: i.product?.price ?? i.price,
+      quantity: i.count ?? 1,
+      // keep optional fields for compatibility
+      count: i.count,
+      product: i.product
+    }));
+
+    const subtotal = itemsMapped.reduce((sum: number, it: any) => sum + (it.price || 0) * (it.quantity || 1), 0);
+    const shippingPrice = itemsMapped.length ? 30 : 0;
+    const taxPrice = Math.round(subtotal * 0.14 * 100) / 100;
+    const totalOrderPrice = subtotal + shippingPrice + taxPrice;
+    const now = new Date().toISOString();
+    const id = `ORD-${Date.now()}`;
+    const order: OrderSummary = {
+      id,
+      items: itemsMapped as any,
+      paymentType,
+      shippingPrice,
+      taxPrice,
+      totalOrderPrice,
+      createdAt: now,
+      updatedAt: now,
+      isDelivered: false,
+      isPaid: paymentType === 'card',
+    };
+    const all = this.readOrders();
+    all.unshift(order);
+    this.writeOrders(all);
+    this.writeCurrent(order);
+    return order;
+  }
+
+  clearOrders(): void {
+    if (!this.isBrowser()) return;
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(this.CURRENT_KEY);
+    } catch {}
+  }
+
+  // ✅ Compatibility method used by CartComponent
+  addOrder(items: CartItem[]): void {
+    // Create a local order summary from provided items, using current cart totals
+    const paymentType = this.cart.getPaymentMethod();
+    const shippingPrice = items.length ? 30 : 0;
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const taxPrice = Math.round(subtotal * 0.14 * 100) / 100;
+    const totalOrderPrice = subtotal + shippingPrice + taxPrice;
+    const now = new Date().toISOString();
+    const id = `ORD-${Date.now()}`;
+    const order: OrderSummary = {
+      id,
+      items,
+      paymentType,
+      shippingPrice,
+      taxPrice,
+      totalOrderPrice,
+      createdAt: now,
+      updatedAt: now,
+      isDelivered: false,
+      isPaid: paymentType === 'card',
+    };
+    const all = this.getOrders();
+    all.unshift(order);
+    this.writeOrders(all);
+    this.writeCurrent(order);
+  }
+
   // ✅ Real API calls
 
   // Cash on Delivery
@@ -120,12 +194,8 @@ export class OrdersService {
   }
 
   // Stripe Card Payment
-  createCardOrder(cartId: string, shippingAddress: any) {
-    return this.http.post(
-      `${this.baseUrl}/checkout-session/${cartId}?url=http://localhost:4200`,
-      {
-        shippingAddress,
-      }
-    );
+  createCardOrder(cartId: string, shippingAddress: any, returnUrl: string) {
+    const url = `${this.baseUrl}/checkout-session/${cartId}?url=${encodeURIComponent(returnUrl)}`;
+    return this.http.post(url, { shippingAddress });
   }
 }

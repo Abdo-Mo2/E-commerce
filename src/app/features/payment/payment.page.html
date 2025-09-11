@@ -1,16 +1,27 @@
 <section class="max-w-lg mx-auto p-6">
   <h1 class="text-2xl font-bold mb-6 text-center">Payment Details</h1>
 
-  <form class="space-y-4">
+  <div *ngIf="loading" class="text-center py-6">
+    <p>Loading cart...</p>
+  </div>
+
+  <form class="space-y-4" *ngIf="!loading" #f="ngForm">
     <div>
       <label class="block mb-1 font-medium">Phone Number</label>
       <input
         type="text"
         [(ngModel)]="phone"
         name="phone"
+        #phoneCtrl="ngModel"
+        required
+        pattern="^\+?\d{10,15}$"
         class="w-full border rounded-lg px-3 py-2"
-        placeholder="Enter your phone number"
+        placeholder="e.g. +201234567890 or 01234567890"
       />
+      <div class="text-sm text-red-600 mt-1" *ngIf="phoneCtrl.invalid && (phoneCtrl.touched || phoneCtrl.dirty)">
+        <span *ngIf="phoneCtrl.errors?.['required']">Phone is required.</span>
+        <span *ngIf="phoneCtrl.errors?.['pattern']">Enter a valid phone (10-15 digits, optional +).</span>
+      </div>
     </div>
 
     <div>
@@ -19,9 +30,16 @@
         type="text"
         [(ngModel)]="city"
         name="city"
+        #cityCtrl="ngModel"
+        required
+        minlength="2"
         class="w-full border rounded-lg px-3 py-2"
         placeholder="Enter your city"
       />
+      <div class="text-sm text-red-600 mt-1" *ngIf="cityCtrl.invalid && (cityCtrl.touched || cityCtrl.dirty)">
+        <span *ngIf="cityCtrl.errors?.['required']">City is required.</span>
+        <span *ngIf="cityCtrl.errors?.['minlength']">City must be at least 2 characters.</span>
+      </div>
     </div>
 
     <div>
@@ -29,16 +47,24 @@
       <textarea
         [(ngModel)]="address"
         name="address"
+        #addrCtrl="ngModel"
+        required
+        minlength="5"
         class="w-full border rounded-lg px-3 py-2"
         placeholder="Enter detailed address"
       ></textarea>
+      <div class="text-sm text-red-600 mt-1" *ngIf="addrCtrl.invalid && (addrCtrl.touched || addrCtrl.dirty)">
+        <span *ngIf="addrCtrl.errors?.['required']">Address is required.</span>
+        <span *ngIf="addrCtrl.errors?.['minlength']">Address must be at least 5 characters.</span>
+      </div>
     </div>
 
     <div class="flex gap-4 pt-4">
       <button
         type="button"
         (click)="payCash()"
-        class="flex-1 h-11 rounded-xl bg-main text-white font-semibold shadow hover:bg-main2 transition"
+        [disabled]="!cartLoaded || cartItems.length === 0 || phoneCtrl?.invalid || cityCtrl?.invalid || addrCtrl?.invalid"
+        class="flex-1 h-11 rounded-xl bg-main text-white font-semibold shadow hover:bg-main2 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Pay with Cash
       </button>
@@ -46,7 +72,8 @@
       <button
         type="button"
         (click)="payCard()"
-        class="flex-1 h-11 rounded-xl bg-emerald-600 text-white font-semibold shadow hover:bg-emerald-700 transition"
+        [disabled]="!cartLoaded || cartItems.length === 0 || phoneCtrl?.invalid || cityCtrl?.invalid || addrCtrl?.invalid"
+        class="flex-1 h-11 rounded-xl bg-emerald-600 text-white font-semibold shadow hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Pay with Card
       </button>

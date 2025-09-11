@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environments';
 
 export interface CartItem {
+  // Optional fields for API parity
+  count?: number;
+  product?: any;
+  // Required fields used by local cart logic
   productId: string;
   title: string;
   image: string;
@@ -14,10 +18,17 @@ export type PaymentMethod = 'cod' | 'card';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
+  clearCart() {
+    throw new Error('Method not implemented.');
+  }
+  getCart() {
+    throw new Error('Method not implemented.');
+  }
   private readonly http = inject(HttpClient);
 
   private readonly STORAGE_KEY = 'cart_items';
   private readonly PAYMENT_METHOD_KEY = 'cart_payment_method';
+  cartItems$: any;
 
   private isBrowser(): boolean {
     return typeof window !== 'undefined';

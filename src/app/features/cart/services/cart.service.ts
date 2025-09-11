@@ -25,16 +25,17 @@ export class CartService {
   /** expose observable for components */
   cartItems$ = this.items$.asObservable();
 
+  constructor() {
+    // Load cartId from localStorage on service init
+    const storedCartId = localStorage.getItem('cartId');
+    if (storedCartId) this.cartId = storedCartId;
+  }
+
   /** fetch user cart from backend */
   getCart(): Observable<CartItem[]> {
     return this.http.get<any>(this.API).pipe(
       tap((res) => {
-        if (res?.data?._id) {
-          this.cartId = res.data._id;
-          if (this.cartId) {
-            localStorage.setItem('cartId', this.cartId);
-          }
-        }
+        if (res?.data?._id) this.setCartId(res.data._id);
         this.items$.next(res.data.products || []);
       }),
       map((res) => res.data.products || [])
@@ -45,12 +46,7 @@ export class CartService {
   addToCart(productId: string): Observable<any> {
     return this.http.post<any>(this.API, { productId }).pipe(
       tap((res) => {
-        if (res?.data?._id) {
-          this.cartId = res.data._id;
-          if (this.cartId) {
-            localStorage.setItem('cartId', this.cartId);
-          }
-        }
+        if (res?.data?._id) this.setCartId(res.data._id);
         this.items$.next(res.data.products || []);
       })
     );
@@ -60,12 +56,7 @@ export class CartService {
   removeFromCart(productId: string): Observable<any> {
     return this.http.delete<any>(`${this.API}/${productId}`).pipe(
       tap((res) => {
-        if (res?.data?._id) {
-          this.cartId = res.data._id;
-          if (this.cartId) {
-            localStorage.setItem('cartId', this.cartId);
-          }
-        }
+        if (res?.data?._id) this.setCartId(res.data._id);
         this.items$.next(res.data.products || []);
       })
     );
@@ -82,8 +73,14 @@ export class CartService {
     );
   }
 
-  /** return current cartId (always string) */
-  getCartId(): string {
-    return this.cartId || localStorage.getItem('cartId') || '';
+  /** helper to safely set cartId and save to localStorage */
+  private setCartId(id: string) {
+    this.cartId = id;
+    localStorage.setItem('cartId', id);
+  }
+
+  /** return current cartId (string or null) */
+  getCartId(): string | null {
+    return this.cartId;
   }
 }

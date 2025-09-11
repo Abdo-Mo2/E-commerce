@@ -6,19 +6,29 @@
     <a routerLink="/products" class="inline-flex items-center h-11 px-6 rounded-xl bg-main text-white font-semibold">Start shopping</a>
   </div>
 
-  <div *ngIf="list.length" class="grid grid-cols-1 gap-4">
-    <div *ngFor="let o of list" class="border rounded-xl p-4 flex items-center justify-between gap-4">
-      <img [src]="o.items[0].image" [alt]="o.items[0].title" class="w-16 h-16 rounded object-contain bg-white" />
-      <div class="flex-1">
-        <div class="text-sm text-slate-500">Order ID</div>
-        <div class="font-medium">{{ o.id }}</div>
-        <div class="text-xs text-slate-500">{{ o.createdAt | date:'medium' }}</div>
+  <div *ngIf="list.length" class="space-y-4">
+    <div class="flex justify-end">
+      <button class="h-10 px-4 rounded-xl bg-red-600 text-white font-semibold" (click)="clearAll()">Clear orders</button>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      <div *ngFor="let o of list" class="rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white shadow-sm">
+        <div class="flex items-center gap-4">
+          <img [src]="o.items[0].image" [alt]="o.items[0].title" class="w-20 h-20 sm:w-24 sm:h-24 rounded object-contain bg-white" />
+          <div>
+            <div class="text-sm text-slate-500">Order ID</div>
+            <div class="font-medium">{{ o.id }}</div>
+            <div class="text-xs text-slate-500">{{ o.createdAt | date:'medium' }}</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+          <div class="text-right">
+            <div class="text-sm">Items: {{ o.items.length }}</div>
+            <div class="text-sm">Total: <span class="font-semibold">{{ o.totalOrderPrice | currency }}</span></div>
+          </div>
+          <button class="h-10 px-4 rounded-xl bg-main text-white font-semibold" (click)="view(o)">View delivery</button>
+        </div>
       </div>
-      <div class="text-right">
-        <div class="text-sm">Items: {{ o.items.length }}</div>
-        <div class="text-sm">Total: <span class="font-semibold">{{ o.totalOrderPrice | currency }}</span></div>
-      </div>
-      <button class="h-10 px-4 rounded-xl bg-main text-white font-semibold" (click)="view(o)">View delivery</button>
     </div>
   </div>
 </div>

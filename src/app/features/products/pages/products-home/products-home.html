@@ -55,7 +55,7 @@
         <div class="mt-2 font-medium line-clamp-1">{{ p.title }}</div>
         <div class="text-sm flex justify-between items-center"><span>{{ p.price | currency }}</span><span>⭐ {{ p.ratingsAverage }}</span></div>
                 <button
-      (click)="$event.preventDefault(); $event.stopPropagation(); addToCart(products)"
+      (click)="$event.preventDefault(); $event.stopPropagation(); addToCart(p)"
       class="w-full h-11 mt-5 gap-2 rounded-lg bg-main text-white font-semibold text-sm shadow hover:bg-green-700 transition-all duration-300"
       (mouseenter)="onAddToCartHover($event, true)"
       (mouseleave)="onAddToCartHover($event, false)"

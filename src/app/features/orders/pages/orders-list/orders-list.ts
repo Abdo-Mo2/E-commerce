@@ -18,6 +18,11 @@ export class OrdersListPage {
     this.orders.setCurrentById(order.id);
     this.router.navigate(['/orders/delivery']);
   }
+
+  clearAll(): void {
+    this.orders.clearOrders();
+    this.list = [];
+  }
 }
 
 

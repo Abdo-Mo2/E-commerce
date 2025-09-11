@@ -1,61 +1,34 @@
-<section class="px-2 md:px-0">
-  <!-- Empty Cart -->
-  <div *ngIf="!items.length" class="flex flex-col items-center justify-center text-center py-20">
-    <img 
-      src="/imges/Logos/download.svg" 
-      alt="Empty Cart" 
-      class="w-64 mb-6" 
-    />
-    <h1 class="text-2xl font-bold mb-3">Your cart</h1>
-    <div class="text-gray-600 text-lg mb-6">
-      Your cart is empty.
-    </div>
+<div class="cart-container p-4 max-w-5xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Shopping Cart</h1>
 
-    <!-- Back to Shopping Button -->
-    <a 
-      routerLink="/home" 
-      class="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-main text-white font-semibold shadow hover:bg-main2 transition-colors"
-    >
-      Back to shopping
-    </a>
+  <div *ngIf="items.length === 0" class="text-center py-10">
+    Your cart is empty
   </div>
 
-  <!-- Cart with Items -->
-  <div *ngIf="items.length" class="grid gap-3">
-    <div *ngFor="let item of items" class="flex gap-3 items-center border rounded-xl p-3">
-      <img [src]="item.image" [alt]="item.title" class="w-16 h-16 rounded object-cover" />
-      <div class="flex-1">
-        <div class="font-medium line-clamp-1">{{ item.title }}</div>
-        <div class="text-sm text-slate-500">{{ item.price | currency }}</div>
+  <div *ngIf="items.length > 0" class="space-y-4">
+    <div *ngFor="let item of items" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2 rounded-lg shadow-sm p-3 bg-white">
+      <div class="flex items-center gap-3">
+        <img [src]="item.image" alt="{{item.title}}" class="w-24 h-24 sm:w-28 sm:h-28 object-cover rounded" />
+        <div>
+          <h2 class="font-semibold text-base">{{item.title}}</h2>
+          <p class="text-gray-600 text-sm">{{item.price | currency}}</p>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button (click)="dec(item)" class="w-8 h-8 rounded bg-slate-100">-</button>
-        <span class="w-6 text-center">{{ item.quantity }}</span>
-        <button (click)="inc(item)" class="w-8 h-8 rounded bg-slate-100">+</button>
+      <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
+        <div class="flex items-center">
+          <button (click)="dec(item)" class="px-3 py-1 rounded bg-gray-100">-</button>
+          <span class="px-3">{{item.quantity}}</span>
+          <button (click)="inc(item)" class="px-3 py-1 rounded bg-gray-100">+</button>
+        </div>
+        <button (click)="remove(item)" class="px-4 py-2 bg-red-500 text-white rounded-lg">Remove</button>
       </div>
-      <button (click)="remove(item)" class="text-red-600 text-sm">Remove</button>
     </div>
 
-    <div class="flex items-center justify-between border-t pt-3">
-      <div class="text-lg font-semibold">Subtotal</div>
-      <div class="text-lg font-semibold">{{ subtotal | currency }}</div>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6 rounded-lg p-3 bg-white shadow-sm">
+      <div>
+        <strong>Subtotal:</strong> {{subtotal | currency}}
+      </div>
+      <button (click)="checkout()" class="px-6 py-2 bg-green-600 text-white rounded-lg">Checkout</button>
     </div>
-
-    <!-- Payment method -->
-<div class="flex justify-end">
-  <button 
-    class="h-11 rounded-xl bg-emerald-600 text-white font-semibold px-4" 
-    [routerLink]="['/payment']"
-  >
-    Checkout
-  </button>
-  <button 
-    class="h-11 rounded-xl bg-slate-200 text-slate-800 font-semibold px-4 ml-2" 
-    (click)="clear()"
-  >
-    Clear
-  </button>
+  </div>
 </div>
-
-  </div>
-</section>

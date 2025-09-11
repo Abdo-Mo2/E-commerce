@@ -128,13 +128,13 @@ product: any;
     return pages;
   }
 
-    addToCart(product: any): void {
+  addToCart(product: any): void {
     this.cart.addItem({
       productId: product._id,
       title: product.title,
       image: product.imageCover,
       price: product.price,
-      quantity: 1,
+      quantity: 1
     });
     this.toastr.success('Added to cart');
   }

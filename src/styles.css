@@ -1,1 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
+
+@import "./styles/typography.css";
+@import "tailwindcss";
+@import "./styles/base.css";
+@import "./styles/variables.css";
+@import "./styles/themes.css";
+
+
+
+
+
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+@import "flowbite/src/themes/default";
+@import "ngx-toastr/toastr";
+
+
+
+
+/* Toastr custom theme */
+.toast-main {
+  background: var(--main-color) !important;
+  color: #fff !important;
+  box-shadow: var(--shadow);
+  border-radius: 0.75rem;
+  z-index: 9999;
+}
+.toast-main .toast-title,
+.toast-main .toast-message {
+  color: #fff !important;
+}
+.toast-main .toast-progress {
+  background: rgba(255,255,255,0.7) !important;
+}

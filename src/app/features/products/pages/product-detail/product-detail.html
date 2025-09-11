@@ -1,0 +1,57 @@
+<div class="container mx-auto max-w-4xl py-10 flex flex-col items-center justify-center">
+  <div class="w-full flex flex-col md:flex-row gap-8 items-center justify-center">
+    <!-- Images Section -->
+    <div class="flex flex-col items-center w-full md:w-1/2">
+      <div class="overflow-hidden rounded-xl bg-white mb-4">
+        <img [src]="images[currentIndex]" [alt]="product?.title" class="w-full h-96 object-contain" />
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2 w-full">
+        <img *ngFor="let img of images; let i = index"
+             [src]="img"
+             (click)="currentIndex=i"
+             class="w-full h-16 object-cover rounded cursor-pointer transition ring-2"
+             [ngClass]="i===currentIndex ? 'ring-main' : 'ring-transparent'" />
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="w-full md:w-1/2 flex flex-col justify-center">
+      <h1 class="text-3xl font-bold mb-2 text-center md:text-left">{{ product?.title }}</h1>
+      <div class="text-sm text-slate-500 mb-2 text-center md:text-left">
+        <span *ngIf="product?.category">
+          Category: <span class="font-semibold">{{ product?.category?.name }}</span>
+        </span>
+      </div>
+      <div class="mt-2 text-lg font-semibold text-green-700 text-center md:text-left">
+        {{ product?.price | currency }}
+      </div>
+      <div class="mt-1 text-center md:text-left">⭐ {{ product?.ratingsAverage }}</div>
+      <p class="mt-4 text-slate-700 text-center md:text-left">{{ product?.description }}</p>
+
+      <div class="flex justify-between text-sm mt-3 text-black mb-2 font-bold">
+        <span>Created:</span>
+        <span *ngIf="product?.createdAt">{{ product?.createdAt | date:'mediumDate' }}</span>
+      </div>
+    
+      <div class="flex justify-between text-sm mt-3 text-black mb-2 font-bold">
+        <span>Last Updated:</span>
+        <span *ngIf="product?.updatedAt">{{ product?.updatedAt | date:'mediumDate' }}</span>
+      </div>
+    
+      <div class="mt-6 mb-3 text-center md:text-left">
+        <h1 *ngIf="product?.brand">
+          <span class="font-thin text-5xl">{{ product?.brand?.name }}</span>
+        </h1>
+      </div>
+
+      <button class="mt-6 h-11 rounded-xl bg-main text-white font-semibold px-8 w-full md:w-auto"
+              (click)="addToCart()">Add to cart</button>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="w-full flex justify-between mt-8">
+    <button class="h-11 rounded-xl bg-main text-white font-semibold px-6" (click)="prev()">Previous</button>
+    <button class="h-11 rounded-xl bg-main text-white font-semibold px-6" (click)="next()">Next</button>
+  </div>
+</div>

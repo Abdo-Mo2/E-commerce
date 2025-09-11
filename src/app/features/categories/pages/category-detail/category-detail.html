@@ -1,0 +1,161 @@
+<div class="px-4 py-6 max-w-7xl mx-auto">
+  <!-- Back Button -->
+  <div class="mb-6">
+    <button (click)="goBack()" 
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Back to Categories
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Category Header -->
+  <div *ngIf="!loading && category" class="mb-8">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8">
+      <div class="flex items-center space-x-6">
+        <div class="w-24 h-24 rounded-full overflow-hidden bg-white shadow-lg">
+          <img [src]="category.image" [alt]="category.name" 
+               class="w-full h-full object-cover" 
+               onerror="this.src='https://via.placeholder.com/96x96?text=' + encodeURIComponent(this.alt)" />
+        </div>
+        <div>
+          <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ category.name }}</h1>
+          <p class="text-lg text-gray-600">{{ total }} products available</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <div *ngIf="!loading && products.length > 0">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900">Products in {{ category?.name }}</h2>
+      <span class="text-sm text-gray-500">Page {{ page }} of {{ totalPages }}</span>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<a *ngFor="let product of products" 
+   [routerLink]="['/products', product._id]"
+   class="group block relative h-full">
+
+  <!-- Product Card -->
+  <div class="h-full flex flex-col rounded-xl overflow-hidden shadow-sm 
+              transition-all duration-300 hover:shadow-lg relative
+              border-0 hover:border-4 hover:border-main">
+    
+    <!-- Image Wrapper -->
+    <div class="aspect-square overflow-hidden relative">
+      <img [src]="product.imageCover" [alt]="product.title" 
+           class="w-full h-full object-cover transform transition-transform duration-300 ease-in-out group-hover:scale-110" />
+
+      <!-- Wishlist Button -->
+   <button
+        class="absolute top-3 right-3 bg-gray-200 border-none rounded-full w-9 h-9 flex items-center justify-center shadow 
+               transform translate-x-10 opacity-0 pointer-events-none
+               transition-all duration-300 ease-in-out 
+               group-hover:translate-x-0 group-hover:opacity-100 group-hover:pointer-events-auto"
+        (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist(product._id)"
+        aria-label="Toggle wishlist"
+        title="Add to wishlist"
+      >
+        <span class="text-main text-xl" *ngIf="!isInWishlist(product._id)">♡</span>
+        <span class="text-main text-xl" *ngIf="isInWishlist(product._id)">♥</span>
+      </button>
+    </div>
+
+    <!-- Card Content -->
+    <div class="p-4 flex flex-col flex-grow">
+      <h3 class="font-medium text-gray-900 text-sm line-clamp-2 mb-2">
+        {{ product.title }}
+      </h3>
+      <div class="mt-auto flex items-center justify-between">
+        <span class="text-lg font-semibold text-blue-600">${{ product.price }}</span>
+        <div class="flex items-center space-x-1">
+          <span class="text-yellow-400">⭐</span>
+          <span class="text-sm text-gray-600">{{ product.ratingsAverage }}</span>
+        </div>
+      </div>
+
+      <!-- Add to Cart Button -->
+      <button
+        (click)="$event.preventDefault(); $event.stopPropagation(); addToCart(products)"
+        class="w-full h-11 mt-5 gap-2 rounded-lg bg-main text-white font-semibold text-sm shadow hover:bg-green-700 transition-all duration-300"
+        (mouseenter)="onAddToCartHover($event, true)"
+        (mouseleave)="onAddToCartHover($event, false)"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</a>
+
+
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex items-center justify-center gap-2 mt-8">
+      <button (click)="prevPage()" [disabled]="page <= 1"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+        Prev
+      </button>
+      
+      <!-- Page Numbers -->
+      <div class="flex items-center gap-1">
+        <button *ngFor="let pageNum of visiblePages" 
+                (click)="goToPage(pageNum)"
+                [class]="pageNum === page 
+                  ? 'px-3 py-2 rounded-lg bg-main text-white font-medium' 
+                  : 'px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50'">
+          {{ pageNum }}
+        </button>
+      </div>
+      
+      <button (click)="nextPage()" [disabled]="page >= totalPages"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- No Products State -->
+  <div *ngIf="!loading && products.length === 0" class="text-center py-12">
+    <div class="text-gray-400 mb-4">
+      <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+    <p class="text-gray-500">There are no products available in this category at the moment.</p>
+    <div class="mt-4">
+      <a [routerLink]="['/products']" 
+         class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+        Browse All Products
+      </a>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && !category" class="text-center py-12">
+    <div class="text-gray-400 mb-4">
+      <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Category not found</h3>
+    <p class="text-gray-500">The category you're looking for doesn't exist or has been removed.</p>
+    <div class="mt-4">
+      <button (click)="goBack()" 
+              class="inline-flex items-center px-4 py-2 bg-main text-white text-sm font-medium rounded-lg hover:bg-main2 transition-colors">
+        Go Back to Categories
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="px-4 py-8 max-w-5xl mx-auto">
+  <h1 class="text-2xl font-bold mb-6">Order Delivery</h1>
+
+  <div *ngIf="!order" class="text-center py-16">
+    <p class="text-gray-600 mb-6">No active order found.</p>
+    <a routerLink="/products" class="inline-flex items-center h-11 px-6 rounded-xl bg-main text-white font-semibold">Back to shopping</a>
+  </div>
+
+  <div *ngIf="order" class="grid gap-6">
+    <div class="border rounded-xl p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+        <div><span class="text-slate-500">Order ID:</span> <span class="font-medium">{{ order.id }}</span></div>
+        <div><span class="text-slate-500">Payment Type:</span> <span class="font-medium uppercase">{{ order.paymentType }}</span></div>
+        <div><span class="text-slate-500">Created:</span> <span class="font-medium">{{ order.createdAt | date:'medium' }}</span></div>
+        <div><span class="text-slate-500">Last Update:</span> <span class="font-medium">{{ order.updatedAt | date:'medium' }}</span></div>
+        <div><span class="text-slate-500">isDelivered:</span> <span class="font-medium">{{ order.isDelivered }}</span></div>
+        <div><span class="text-slate-500">isPaid:</span> <span class="font-medium">{{ order.isPaid }}</span></div>
+        <div><span class="text-slate-500">Shipping Price:</span> <span class="font-medium">{{ order.shippingPrice | currency }}</span></div>
+        <div><span class="text-slate-500">Tax Price:</span> <span class="font-medium">{{ order.taxPrice | currency }}</span></div>
+        <div><span class="text-slate-500">Total Order Price:</span> <span class="font-bold">{{ order.totalOrderPrice | currency }}</span></div>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="text-left border-b">
+            <th class="py-2 px-3">Item</th>
+            <th class="py-2 px-3">Product image</th>
+            <th class="py-2 px-3">Price</th>
+            <th class="py-2 px-3">Brand</th>
+            <th class="py-2 px-3">Count</th>
+            <th class="py-2 px-3">Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of rows; let i = index" class="border-b">
+            <td class="py-2 px-3">
+              <div class="font-medium">{{ i + 1 }}</div>
+            </td>
+            <td class="py-2 px-3">
+              <img [src]="r.image" [alt]="r.title" class="w-16 h-16 object-contain rounded bg-white" />
+            </td>
+            <td class="py-2 px-3">{{ r.price | currency }}</td>
+            <td class="py-2 px-3">{{ r.brand }}</td>
+            <td class="py-2 px-3">{{ r.quantity }}</td>
+            <td class="py-2 px-3">{{ r.category }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+

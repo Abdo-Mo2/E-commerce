@@ -1,0 +1,49 @@
+<div class="px-4 py-6 max-w-7xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8">Product Categories</h1>
+  
+
+  
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <!-- Categories Grid -->
+  <div *ngIf="!loading && categories.length > 0" class="grid gap-6">
+    <div *ngFor="let category of categories" class="border rounded-xl overflow-hidden shadow-sm">
+      <!-- Category Header -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 rounded-full overflow-hidden bg-white shadow-md">
+              <img [src]="category.image" [alt]="category.name" 
+                   class="w-full h-full object-cover" 
+                   onerror="this.src='https://via.placeholder.com/64x64?text=' + encodeURIComponent(this.alt)" />
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">{{ category.name }}</h2>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <a [routerLink]="['/categories', category._id]" 
+               class="inline-flex items-center px-4 py-2 bg-main text-white text-sm font-medium rounded-lg hover:bg-main2 transition-colors">
+              View Products
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && categories.length === 0" class="text-center py-12">
+    <div class="text-gray-400 mb-4">
+      <img src="/imges/Logos/download.svg" alt="">
+    </div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">No categories found</h3>
+    <p class="text-gray-500">There are no product categories available at the moment.</p>
+  </div>
+</div>

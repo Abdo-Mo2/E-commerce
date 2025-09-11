@@ -1,0 +1,6 @@
+@theme { 
+ --color-main: var(--main-color);
+ --color-main2: var(--main-color2);
+}
+
+

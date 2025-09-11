@@ -1,0 +1,211 @@
+<nav class="bg-white border-gray-200 sticky top-0 z-50" [class.shadow-md]="scrolled">
+  <div
+    class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 "
+  >
+  <!-- old: <a href="/home"><img src="assets/logo.png" alt="logo"></a> -->
+<a href="#" (click)="onLogoClick($event)" role="button" aria-label="Home" class="order-1">
+  <img src="/imges/Logos/freshcart-logo.svg" alt="Site logo" />
+</a>
+
+    <button
+      data-collapse-toggle="navbar-default"
+      type="button"
+      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 order-3 md:order-2"
+      aria-controls="navbar-default"
+      [attr.aria-expanded]="isMenuOpen"
+      (click)="toggleMenu()"
+    >
+      <span class="sr-only">Open main menu</span>
+      <svg
+        class="w-5 h-5"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 17 14"
+      >
+        <path
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M1 1h15M1 7h15M1 13h15"
+        />
+      </svg>
+    </button>
+
+    <!-- Right icons group -->
+    <div class="hidden md:flex items-center gap-4 order-4 ml-auto">
+      @if (isLoggedIn) {
+      <a
+        routerLink="/wishlist"
+        aria-label="Wishlist"
+        class="block py-2 px-3 text-black rounded-sm flex items-center gap-1"
+      >
+        <svg  viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+          <path d="M12 21s-6.716-4.393-9.428-7.105C.86 12.183 0 10.757 0 9.142 0 6.296 2.296 4 5.142 4c1.514 0 2.964.65 3.858 1.693C9.894 4.65 11.344 4 12.858 4 15.704 4 18 6.296 18 9.142c0 1.615-.86 3.041-2.572 4.753C18.716 16.607 12 21 12 21z" />
+        </svg>
+        <span class="text-xs bg-red-500 text-white rounded-full px-1.5" *ngIf="(wishlist.count$ | async) as count">{{ count }}</span>
+      </a>
+      <a
+        routerLink="/orders"
+        aria-label="Orders"
+        class="block py-2 px-3 text-black rounded-sm flex items-center gap-1"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+          <path d="M3 7h11a2 2 0 0 1 2 2v1h1.586a2 2 0 0 1 1.414.586l2.414 2.414A2 2 0 0 1 22 14.414V17a2 2 0 0 1-2 2h-1a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm14 3V9a1 1 0 0 0-1-1H4v9h1a2 2 0 0 1 4 0h6a2 2 0 0 1 4 0h1v-2.586L21.586 13H17z"/>
+        </svg>
+        <span class="text-xs bg-blue-500 text-white rounded-full px-1.5">{{ orders.getOrdersCount() }}</span>
+      </a>
+      <a
+        routerLink="/cart"
+        aria-label="Cart"
+        class="block py-2 px-3 text-black rounded-sm flex items-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+          <path d="M2.25 3a.75.75 0 0 0 0 1.5h1.38l2.4 9.596a2.25 2.25 0 0 0 2.183 1.704h8.337a2.25 2.25 0 0 0 2.183-1.704l1.43-5.72a.75.75 0 0 0-1.452-.363l-1.43 5.72a.75.75 0 0 1-.73.567H8.213a.75.75 0 0 1-.73-.567L5.2 4.5h13.55a.75.75 0 0 0 0-1.5H2.25z"/>
+          <path d="M8.25 20.25a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9-1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+        </svg>
+        <span class="text-xs bg-green-500 text-white rounded-full px-1.5">{{ cart.getItemCount() }}</span>
+      </a>
+
+      <!-- Profile: avatar upload and name dropdown -->
+      <div class="relative flex items-center gap-2">
+        <label class="w-9 h-9 rounded-md overflow-hidden bg-main cursor-pointer flex items-center justify-center">
+          <img *ngIf="profileImage as img" [src]="img" alt="Profile" class="w-full h-full object-cover" />
+          <span *ngIf="!profileImage" class="text-xs text-white">IMG</span>
+          <input type="file" accept="image/*" class="hidden" (change)="onProfileFileChange($event)" />
+        </label>
+        <button class="text-sm font-medium text-black flex items-center gap-1" (click)="toggleDropdown()">
+          {{ profileName }}
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.08z" clip-rule="evenodd"/></svg>
+        </button>
+        <div *ngIf="dropdownOpen" class="absolute right-0 top-full mt-2 w-40 rounded-lg border-0 bg-main text-white shadow-lg z-50" (mouseleave)="closeDropdown()">
+          <a routerLink="/settings" class="block px-3 py-2 text-sm hover:bg-white/10">Settings</a>
+          <button class="w-full text-left px-3 py-2 text-sm hover:bg-white/10" (click)="signout()">Sign out</button>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="md:block md:w-auto order-2 md:order-3 md:absolute md:left-1/2 md:-translate-x-1/2" id="navbar-default" [class.hidden]="!isMenuOpen && true" [class.block]="isMenuOpen" (click)="closeMenu()">
+      <!-- Mobile dropdown panel: full-width under navbar -->
+      <div class="md:hidden absolute left-0 top-full w-full bg-white border-t border-gray-100 shadow-lg">
+        <div class="flex items-center justify-between px-4 py-3">
+          <a routerLink="/wishlist" aria-label="Wishlist" class="block py-2 px-3 text-black rounded-sm flex items-center gap-1">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+              <path d="M12 21s-6.716-4.393-9.428-7.105C.86 12.183 0 10.757 0 9.142 0 6.296 2.296 4 5.142 4c1.514 0 2.964.65 3.858 1.693C9.894 4.65 11.344 4 12.858 4 15.704 4 18 6.296 18 9.142c0 1.615-.86 3.041-2.572 4.753C18.716 16.607 12 21 12 21z" />
+            </svg>
+            <span class="text-xs bg-red-500 text-white rounded-full px-1.5" *ngIf="(wishlist.count$ | async) as count">{{ count }}</span>
+          </a>
+          <a routerLink="/orders" aria-label="Orders" class="block py-2 px-3 text-black rounded-sm flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+              <path d="M3 7h11a2 2 0 0 1 2 2v1h1.586a2 2 0 0 1 1.414.586l2.414 2.414A2 2 0 0 1 22 14.414V17a2 2 0 0 1-2 2h-1a2 2 0 1 1-4 0H9a2 2 0 1 1-4 0H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zm14 3V9a1 1 0 0 0-1-1H4v9h1a2 2 0 0 1 4 0h6a2 2 0 0 1 4 0h1v-2.586L21.586 13H17z"/>
+            </svg>
+            <span class="text-xs bg-blue-500 text-white rounded-full px-1.5">{{ orders.getOrdersCount() }}</span>
+          </a>
+          <a routerLink="/cart" aria-label="Cart" class="block py-2 px-3 text-black rounded-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main">
+              <path d="M2.25 3a.75.75 0 0 0 0 1.5h1.38l2.4 9.596a2.25 2.25 0 0 0 2.183 1.704h8.337a2.25 2.25 0 0 0 2.183-1.704l1.43-5.72a.75.75 0 0 0-1.452-.363l-1.43 5.72a.75.75 0 0 1-.73.567H8.213a.75.75 0 0 1-.73-.567L5.2 4.5h13.55a.75.75 0 0 0 0-1.5H2.25z"/>
+              <path d="M8.25 20.25a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm9-1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+            </svg>
+            <span class="text-xs bg-green-500 text-white rounded-full px-1.5">{{ cart.getItemCount() }}</span>
+          </a>
+          <!-- removed profile from icons row; moved below links -->
+        </div>
+        <ul class="font-medium flex flex-col p-4 border-t border-gray-100 bg-white">
+  @if (isLoggedIn) {
+          <li>
+          <a routerLink="/home" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Home</a>
+        </li>
+        <li>
+          <a routerLink="/products" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Products</a>
+        </li>
+        <li>
+          <a routerLink="/categories" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Categories</a>
+        </li>
+        <li>
+          <a routerLink="/brands" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Brands</a>
+        </li>
+        <!-- Mobile user item under Brands -->
+        <li class="relative">
+          <button class="w-full flex items-center justify-between py-2 px-3 rounded-md text-black" (click)="$event.stopPropagation(); toggleDropdown()">
+            <span class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-main"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 4.971V22h20v-3.029C22 15.657 15.314 14 12 14z"/></svg>
+              <span>{{ profileName }}</span>
+            </span>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.25 8.29a.75.75 0 01-.02-1.08z" clip-rule="evenodd"/></svg>
+          </button>
+          <div *ngIf="dropdownOpen" class="mt-2 ml-10 flex flex-col rounded-lg bg-main text-white shadow-lg overflow-hidden">
+            <a routerLink="/settings" class="px-3 py-2 text-sm hover:bg-white/10">Settings</a>
+            <button class="text-left px-3 py-2 text-sm hover:bg-white/10" (click)="signout()">Sign out</button>
+          </div>
+        </li>
+  }@else {
+        <li>
+          <a routerLink="/signin" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Login</a>
+        </li>
+        <li>
+          <a routerLink="/signup" routerLinkActive="bg-main text-white" class="block py-2 px-3 text-black rounded-md hover:bg-gray-100">Sinup</a>
+        </li>
+  }
+        </ul>
+      </div>
+      <ul class="hidden md:flex font-medium p-0 md:flex-row md:space-x-4 rtl:space-x-reverse md:border-0">
+  @if (isLoggedIn) {
+          <li>
+          <a
+            routerLink="/home"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Home</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/products"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Products</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/categories"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Categories</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/brands"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Brands</a
+          >
+        </li>
+  }@else {
+         <li>
+          <a
+            routerLink="/signin"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Login</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/signup"
+            routerLinkActive="bg-main text-white"
+            class="block py-2 px-3 text-black rounded-md hover:bg-gray-100"
+            >Sinup</a
+          >
+        </li>
+  }
+
+        
+   
+      </ul>
+    </div>
+  </div>
+</nav>

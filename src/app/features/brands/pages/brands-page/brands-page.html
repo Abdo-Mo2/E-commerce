@@ -1,0 +1,20 @@
+<div class="grid gap-6">
+  <!-- Brands Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <a *ngFor="let brand of brands"
+       [routerLink]="['/brands', brand._id, brand.name]"
+       class="cursor-pointer p-4 transition block group">
+      
+      <!-- Brand Image -->
+      <div class="relative flex items-center justify-center">
+        <img [src]="brand.image" [alt]="brand.name"
+             class="h-30 w-auto mx-auto mb-3 object-contain transition-transform duration-500 group-hover:scale-115 group-hover:border-2 group-hover:border-main rounded-lg" />
+      </div>
+      
+      <!-- Brand Name -->
+      <div class="text-center font-semibold text-gray-800">
+        {{ brand.name }}
+      </div>
+    </a>
+  </div>
+</div>

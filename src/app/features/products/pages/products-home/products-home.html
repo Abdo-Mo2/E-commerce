@@ -1,0 +1,92 @@
+
+<section class="px-2 md:px-0 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-4">
+  <aside class="border rounded-xl p-3 h-fit top-4 bg-[#D2E3C8]">
+    <h2 class="font-semibold mb-2">Filters</h2>
+    <form [formGroup]="filters" class="grid gap-3">
+      <input type="text" formControlName="q" placeholder="Search" class="h-10 rounded-xl border border-slate-200 px-3" />
+
+      <div>
+        <label class="text-sm text-slate-500">Category</label>
+        <select formControlName="category" class="h-10 w-full rounded-xl border border-slate-200 px-3">
+          <option value="">All</option>
+          <option *ngFor="let c of categories" [value]="c._id">{{ c.name }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-sm text-slate-500">Brand</label>
+        <select formControlName="brand" class="h-10 w-full rounded-xl border border-slate-200 px-3">
+          <option value="">All</option>
+          <option *ngFor="let b of brands" [value]="b._id">{{ b.name }}</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <input type="number" formControlName="priceMin" placeholder="Min price" class="h-10 rounded-xl border border-slate-200 px-3" />
+        <input type="number" formControlName="priceMax" placeholder="Max price" class="h-10 rounded-xl border border-slate-200 px-3" />
+      </div>
+
+      <div>
+        <label class="text-sm text-slate-500">Sort</label>
+        <select formControlName="sort" class="h-10 w-full rounded-xl border border-slate-200 px-3">
+          <option value="name">Name (A → Z)</option>
+          <option value="nameDesc">Name (Z → A)</option>
+          <option value="price">Price (Low → High)</option>
+          <option value="priceDesc">Price (High → Low)</option>
+        </select>
+      </div>
+    </form>
+  </aside>
+
+  <div>
+    <div class="text-sm text-main text-center mb-2">Showing {{ products.length }} of {{ total }} items - Page {{ page }} of {{ totalPages }}</div>
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mx-auto ">
+      <a *ngFor="let p of products" class=" rounded-xl p-10 mr-3 block transform translate duration-300 relative hover:scale-105" [routerLink]="['/products', p._id]">
+      <button
+          class="absolute top-3 right-3 border-none rounded-full w-9 h-9 flex items-center justify-center shadow transition-all duration-200"
+          (click)="$event.preventDefault(); $event.stopPropagation(); toggleWishlist(p._id)"
+          aria-label="Toggle wishlist"
+          title="Add to wishlist"
+        >
+          <span class="text-main text-lg" *ngIf="!isInWishlist(p._id)">♡</span>
+          <span class="text-main text-lg" *ngIf="isInWishlist(p._id)">♥</span>
+        </button>
+        <img [src]="p.imageCover" [alt]="p.title" class="w-full h-64 object-contain rounded" />
+        <div class="mt-2 font-medium line-clamp-1">{{ p.title }}</div>
+        <div class="text-sm flex justify-between items-center"><span>{{ p.price | currency }}</span><span>⭐ {{ p.ratingsAverage }}</span></div>
+                <button
+      (click)="$event.preventDefault(); $event.stopPropagation(); addToCart(products)"
+      class="w-full h-11 mt-5 gap-2 rounded-lg bg-main text-white font-semibold text-sm shadow hover:bg-green-700 transition-all duration-300"
+      (mouseenter)="onAddToCartHover($event, true)"
+      (mouseleave)="onAddToCartHover($event, false)"
+    >
+      Add to Cart
+    </button>
+      </a>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div *ngIf="totalPages > 1" class="flex items-center justify-center gap-2 mt-8">
+      <button (click)="prevPage()" [disabled]="page <= 1"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+        Prev
+      </button>
+      
+      <!-- Page Numbers -->
+      <div class="flex items-center gap-1">
+        <button *ngFor="let pageNum of visiblePages" 
+                (click)="goToPage(pageNum)"
+                [class]="pageNum === page 
+                  ? 'px-3 py-2 rounded-lg bg-main text-white font-medium' 
+                  : 'px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50'">
+          {{ pageNum }}
+        </button>
+      </div>
+      
+      <button (click)="nextPage()" [disabled]="page >= totalPages"
+        class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50">
+        Next
+      </button>
+    </div>
+  </div>
+</section>
